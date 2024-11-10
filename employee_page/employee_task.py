@@ -3,7 +3,7 @@ from tkcalendar import Calendar
 from datetime import date
 
 # Membuat jendela utama
-def task_display(root: Tk, cursor, tree):
+def task_display(root: Tk, cursor, data):
     root.title("Task Display Form")
 
     # Mengatur jendela menjadi fullscreen
@@ -15,7 +15,7 @@ def task_display(root: Tk, cursor, tree):
 
     # Label untuk Task Name (hanya teks)
     label_task_name = Label(root, text="Task Name:", font=("Arial", 14), bg="white")
-    label_task_name_value = Label(root, text="Example Task Name", font=("Arial", 14), bg="#ECECEC")
+    label_task_name_value = Label(root, text=f"{data}", font=("Arial", 14), bg="#ECECEC")
     label_task_name.grid(row=0, column=0, sticky="e", padx=(20, 10), pady=(20, 10))
     label_task_name_value.grid(row=0, column=1, sticky="w", padx=(10, 20), pady=(20, 10))
 
@@ -33,12 +33,7 @@ def task_display(root: Tk, cursor, tree):
     text_task_description.configure(yscrollcommand=scrollbar.set)
 
     # Masukkan teks deskripsi ke dalam Text widget
-    task_description_text = (
-        "Task Description Example\n"
-        "This is a long description that goes on and on, potentially taking up more "
-        "space than the widget can display at once. With the scrollbar, users can "
-        "scroll through the description even if it becomes very lengthy.\n" * 10  # Contoh teks panjang
-    )
+    task_description_text = data  # Ambil deskripsi dari data
     text_task_description.insert("1.0", task_description_text)
 
     # Atur agar teks tidak bisa diedit oleh pengguna

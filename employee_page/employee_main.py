@@ -2,6 +2,21 @@ from tkinter import *
 from tkinter import ttk
 from employee_page.employee_task import task_display
 
+def task(root, cursor, tree, name, user_id):
+    frame.grid_remove()
+    frame_two.grid_remove()
+    welcome_label.grid_remove()
+    selected = tree.selection()
+    selected_item = tree.item(selected[0], "values")
+    cursor.execute(
+f"""
+SELECT task_name, deskripsi, due_date, status FROM task WHERE taskID = '{selected_item[0]}'
+"""
+    )
+    data = cursor.fetchall()
+    task_display(root, cursor, data, name, user_id)
+
+
 def mark_done_button(db, tree, cursor):
     selected = tree.selection()
     selected_item = tree.item(selected[0], "values")
@@ -29,10 +44,12 @@ def employee(db, root, cursor, name, user_id):
 
     # Label Selamat Datang
     status = "Employee"
+    global welcome_label
     welcome_label = Label(root, text=f"Welcome, {name} ({status})")
     welcome_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
     # Mengatur frame agar menempati sekitar 70% dari window
+    global frame
     frame = Frame(root, borderwidth=1, relief="solid", bg="white")  # Border untuk visualisasi
     frame.grid(row=1, column=0, padx=30, pady=20, sticky="nsew")  # Mengatur padding
 
@@ -87,11 +104,12 @@ SELECT taskID, task_name, due_date, status FROM task WHERE id_employee = '{user_
         tree.insert("", "end", values=["", "No Task", "",])
 
     # Menambahkan frame dan tombol di sebelah kanan
+    global frame_two
     frame_two = Frame(root, borderwidth=0, relief="solid", bg="white")  # Border untuk visualisasi
     frame_two.grid(row=1, column=1, padx=0, pady=20, sticky="nsew")
 
     # Mengatur tombol "View details"
-    View_details_button = Button(frame_two, text="View details", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: task_display(root, cursor, tree))
+    View_details_button = Button(frame_two, text="View details", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: task(root, cursor, tree, name, user_id))
     View_details_button.grid(row=0, column=0, sticky="e", pady=10, padx=5)
 
     # Mengatur tombol "Mark as Done / Not Done"
