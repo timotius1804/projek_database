@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import ttk
 
 # Membuat window utama
-def manager(root: Tk, cursor, name):
+def manager(root: Tk, cursor, name, user_id):
     root.configure(bg="white")
     root.attributes("-fullscreen", True)
     root.title("Employee Task Table")

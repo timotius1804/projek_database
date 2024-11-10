@@ -23,11 +23,11 @@ select * from user where user_name = '{user_name}';
             frame.grid_remove()
             w.grid_remove()
             if data_type == 'Admin':
-                admin_main.admin(root, cursor, user_name)
+                admin_main.admin(root, cursor, user_name, user_id)
             elif data_type == 'Manager':
-                manager_main.manager(root, cursor, user_name)
+                manager_main.manager(root, cursor, user_name, user_id)
             else:
-                employee_main.employee(root, cursor, user_name)
+                employee_main.employee(root, cursor, user_name, user_id)
         else:
             messagebox.showerror("Error", "Wrong Password")
     else:

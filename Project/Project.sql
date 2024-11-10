@@ -10,44 +10,43 @@ create table user(
 );
 
 CREATE TABLE employee (
-    employee_id INT PRIMARY KEY,
+    employee_id INT PRIMARY KEY auto_increment,
     user_id INT,
     FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 CREATE TABLE manager (
-    manager_id INT PRIMARY KEY,
+    manager_id INT PRIMARY KEY auto_increment,
     user_id INT,
     FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
 CREATE TABLE admin (
-    admin_id INT PRIMARY KEY,
+    admin_id INT PRIMARY KEY auto_increment,
     user_id INT,
     FOREIGN KEY (user_id) REFERENCES user(user_id)
-);
-create table task
-(
- taskID  int unique primary key not null,
- task_name varchar(50) not null,
- deskripsi text null,
- id_employee int not null,
- foreign key(id_employee) references employee(employee_id)
 );
 
 
 create table project
 (
-	ProjectID  int unique primary key not null,
+	ProjectID  int primary key auto_increment,
 	Project_name varchar(50) not null,
 	manager_id int not null,
 	foreign key(manager_id) references manager(manager_id)
 );
 
+create table task
+(
+ taskID  int primary key auto_increment,
+ task_name varchar(50) not null,
+ deskripsi text null,
+ id_employee int not null,
+ project_id int not null,
+ foreign key (project_id) references project(ProjectID)
+ foreign key (id_employee) references employee(employee_id)
+);
 
-insert into user(user_name,user_password,user_type)
-value("test1","1234","Employee"),
-value("test1","1234","Employee"),
-value("test1","1234","Employee");
+
 
 select e.employee_id from employee e
 join user u on u.user_id = e.employee_id ;

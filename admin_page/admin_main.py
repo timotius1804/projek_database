@@ -3,7 +3,7 @@ from tkinter import ttk
 import admin_page.admin_add_user as admin_add_user
 import admin_page.admin_edit_user as admin_edit_user
 
-def admin(root: Tk, cursor, name):
+def admin(root: Tk, cursor, name, user_id):
     root.configure(bg="white")
     root.attributes("-fullscreen", True)
     root.title("Employee Task Table")
