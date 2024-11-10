@@ -3,7 +3,7 @@ from tkinter import ttk
 import admin_page.admin_add_user as admin_add_user
 import admin_page.admin_edit_user as admin_edit_user
 
-def admin(root: Tk, cursor):
+def admin(root: Tk, cursor, name):
     root.configure(bg="white")
     root.attributes("-fullscreen", True)
     root.title("Employee Task Table")
@@ -13,7 +13,6 @@ def admin(root: Tk, cursor):
     screen_height = root.winfo_screenheight()
 
     # Label Selamat Datang
-    name = "Albern"  # Ganti dengan nama pengguna yang sesuai
     status = "Admin"
     welcome_label = Label(root, text=f"Welcome, {name} ({status})")
     welcome_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")

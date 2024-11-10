@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import ttk
 
 # Membuat window utama
-def manager(root: Tk, cursor):
+def manager(root: Tk, cursor, name):
     root.configure(bg="white")
     root.attributes("-fullscreen", True)
     root.title("Employee Task Table")
@@ -12,7 +12,6 @@ def manager(root: Tk, cursor):
     screen_height = root.winfo_screenheight()
 
     # Label Selamat Datang
-    name = "Albern"  # Ganti dengan nama pengguna yang sesuai
     status = "Manager"
     welcome_label = Label(root, text=f"Welcome, {name} ({status})")
     welcome_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
