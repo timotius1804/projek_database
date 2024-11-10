@@ -1,6 +1,9 @@
 from tkinter import *
 from tkinter import ttk
 
+def close_window(root):
+    root.destroy()
+
 # Membuat window utama
 def employee(root, cursor, name, user_id):
     root.configure(bg="white")
@@ -63,7 +66,6 @@ SELECT taskID, task_name FROM task WHERE id_employee = '{user_id}'
 """
     )
     data = cursor.fetchall()
-    print(data)
     if data:
         data = [(row[0], row[1], "Due Date", "Status") for row in data]
         for row in data:
@@ -87,7 +89,7 @@ SELECT taskID, task_name FROM task WHERE id_employee = '{user_id}'
     frame_two.grid_rowconfigure(2, weight=1)  # Membiarkan baris 2 mengambil sisa ruang
 
     # Mengatur tombol "Logout" di pojok kanan bawah
-    Logout_button = Button(frame_two, text="Logout", width=int(screen_width - screen_width * 0.99453125), height=1, font=('Inter'))
+    Logout_button = Button(frame_two, text="Logout", width=int(screen_width - screen_width * 0.99453125), height=1, font=('Inter'), command=lambda: close_window(root)) 
     Logout_button.grid(row=3, column=0, sticky="se", pady=10, padx=5)  # Pindahkan ke baris 3
 
     # Mengatur agar frame dua dan treeview bisa menyesuaikan ukuran

@@ -3,6 +3,9 @@ from tkinter import ttk
 import admin_page.admin_add_user as admin_add_user
 import admin_page.admin_edit_user as admin_edit_user
 
+def close_window(root):
+    root.destroy()
+
 def admin(root: Tk, cursor, name, user_id):
     root.configure(bg="white")
     root.attributes("-fullscreen", True)
@@ -91,7 +94,7 @@ def admin(root: Tk, cursor, name, user_id):
     frame_two.grid_rowconfigure(3, weight=1)  # Membiarkan baris 2 mengambil sisa ruang
 
     # Mengatur tombol "Logout" di pojok kanan bawah
-    Logout_button = Button(frame_two, text="Logout", width=int(screen_width - screen_width * 0.99453125), height=1, font=('Inter'))
+    Logout_button = Button(frame_two, text="Logout", width=int(screen_width - screen_width * 0.99453125), height=1, font=('Inter'), command=lambda: close_window(root)) 
     Logout_button.grid(row=4, column=0, sticky="se", pady=10, padx=5)  # Pindahkan ke baris 3
 
     # Mengatur agar frame dua dan treeview bisa menyesuaikan ukuran
