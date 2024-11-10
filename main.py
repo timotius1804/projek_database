@@ -11,15 +11,17 @@ if __name__ == "__main__":
     )
     mycursor = mydb.cursor()
     mycursor.execute("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'companyDB'")
-    result = mycursor.fetchall()
+    result = mycursor.fetchone()
     if result:
         db_exists = True
     else:
         db_exists = False
 
     if not db_exists:
-        db_init.db_init(mycursor)
+        print("Database not found, creating new database")
+        db_init.db_init(mycursor, mydb)
     else:
+        print("Database already exists")
         mycursor.execute("USE companyDB")
 
     root = Tk()
