@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import ttk
 
 # Membuat window utama
-def employee(root, cursor, name):
+def employee(root, cursor, name, user_id):
     root.configure(bg="white")
     root.attributes("-fullscreen", True)
     root.title("Employee Task Table")
@@ -57,16 +57,19 @@ def employee(root, cursor, name):
     tree.configure(yscrollcommand=scrollbar.set)
 
     # Menambahkan beberapa data contoh ke dalam tabel
-    data = [
-        (1, "Complete project documentation", "In Progress"),
-        (2, "Develop login module", "Completed"),
-        (3, "Test user registration", "Pending"),
-        (4, "Design database schema", "In Progress"),
-        (5, "Review pull requests", "Completed"),
-    ] * 10  # Duplikasi data untuk mengisi lebih banyak baris
-
-    for row in data:
-        tree.insert("", "end", values=row)
+    cursor.execute(
+f"""
+SELECT taskID, task_name FROM task WHERE id_employee = '{user_id}'
+"""
+    )
+    data = cursor.fetchall()
+    print(data)
+    if data:
+        data = [(row[0], row[1], "Due Date", "Status") for row in data]
+        for row in data:
+            tree.insert("", "end", values=row)
+    else:
+        tree.insert("", "end", values=["", "No Task", "",])
 
     # Menambahkan frame dan tombol di sebelah kanan
     frame_two = Frame(root, borderwidth=0, relief="solid", bg="white")  # Border untuk visualisasi
