@@ -1,11 +1,25 @@
 from tkinter import *
 from tkinter import ttk
+from employee_page.employee_task import task_display
+
+def mark_done_button(db, tree, cursor):
+    selected = tree.selection()
+    selected_item = tree.item(selected[0], "values")
+
+    new_values = (*selected_item[:-1] , "Done" if selected_item[-1] == "Not Done" else "Not Done")
+    tree.item(selected[0], values=new_values)
+    cursor.execute(
+f"""
+UPDATE task SET status = '{new_values[-1]}' WHERE taskID = '{selected_item[0]}'
+"""
+    )
+    db.commit()
 
 def close_window(root):
     root.destroy()
 
 # Membuat window utama
-def employee(root, cursor, name, user_id):
+def employee(db, root, cursor, name, user_id):
     root.configure(bg="white")
     root.attributes("-fullscreen", True)
     root.title("Employee Task Table")
@@ -62,12 +76,11 @@ def employee(root, cursor, name, user_id):
     # Menambahkan beberapa data contoh ke dalam tabel
     cursor.execute(
 f"""
-SELECT taskID, task_name FROM task WHERE id_employee = '{user_id}'
+SELECT taskID, task_name, due_date, status FROM task WHERE id_employee = '{user_id}'
 """
     )
     data = cursor.fetchall()
     if data:
-        data = [(row[0], row[1], "Due Date", "Status") for row in data]
         for row in data:
             tree.insert("", "end", values=row)
     else:
@@ -78,11 +91,11 @@ SELECT taskID, task_name FROM task WHERE id_employee = '{user_id}'
     frame_two.grid(row=1, column=1, padx=0, pady=20, sticky="nsew")
 
     # Mengatur tombol "View details"
-    View_details_button = Button(frame_two, text="View details", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14))
+    View_details_button = Button(frame_two, text="View details", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: task_display(root, cursor, tree))
     View_details_button.grid(row=0, column=0, sticky="e", pady=10, padx=5)
 
     # Mengatur tombol "Mark as Done / Not Done"
-    Mark_button = Button(frame_two, text="Mark as Done /\nNot Done", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14))
+    Mark_button = Button(frame_two, text="Mark as Done /\nNot Done", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: mark_done_button(db, tree, cursor))
     Mark_button.grid(row=1, column=0, sticky="e", pady=10, padx=5)
 
     # Menambahkan baris kosong sebelum tombol Logout
