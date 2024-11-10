@@ -5,7 +5,7 @@ def close_window(root):
     root.destroy()
 
 # Membuat window utama
-def manager(root: Tk, cursor, name, user_id):
+def manager(db, root: Tk, cursor, name, user_id):
     root.configure(bg="white")
     root.attributes("-fullscreen", True)
     root.title("Employee Task Table")

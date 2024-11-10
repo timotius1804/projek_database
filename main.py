@@ -25,6 +25,6 @@ if __name__ == "__main__":
         mycursor.execute("USE companyDB")
 
     root = Tk()
-    login.login(root, mycursor)
+    login.login(mydb, root, mycursor)
 
     root.mainloop()

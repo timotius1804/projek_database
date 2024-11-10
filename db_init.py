@@ -51,6 +51,8 @@ def db_init(cursor, db):
         deskripsi TEXT NULL,
         id_employee INT NOT NULL,
         project_id INT NOT NULL,
+        status ENUM('Not Done', 'Done') DEFAULT 'Not Done',
+        due_date int DEFAULT 5,
         FOREIGN KEY (project_id) REFERENCES project(ProjectID),
         FOREIGN KEY (id_employee) REFERENCES employee(employee_id)
     )

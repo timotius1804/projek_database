@@ -42,6 +42,7 @@ create table task
  deskripsi text null,
  id_employee int not null,
  project_id int not null,
+ status enum('Not Done', 'Done') not null default 'Not Done',
  foreign key (project_id) references project(ProjectID),
  foreign key (id_employee) references employee(employee_id)
 );

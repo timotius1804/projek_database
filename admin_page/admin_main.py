@@ -6,7 +6,7 @@ import admin_page.admin_edit_user as admin_edit_user
 def close_window(root):
     root.destroy()
 
-def admin(root: Tk, cursor, name, user_id):
+def admin(db, root: Tk, cursor, name, user_id):
     root.configure(bg="white")
     root.attributes("-fullscreen", True)
     root.title("Employee Task Table")
