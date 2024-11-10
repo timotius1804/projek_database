@@ -13,11 +13,12 @@ select * from user where user_name = '{user_name}';
 """
 )
     data = cursor.fetchall()
-    data_password = data[0][2]
-    data_type = data[0][3]
-    user_id = data[0][0]
-    if len(data) > 0:
-        
+    print(data)
+    if data:
+    
+        data_password = data[0][2]
+        data_type = data[0][3]
+        user_id = data[0][0]    
         
         if data_password == user_password:
             frame.grid_remove()
@@ -30,8 +31,10 @@ select * from user where user_name = '{user_name}';
                 employee_main.employee(root, cursor, user_name, user_id)
         else:
             messagebox.showerror("Error", "Wrong Password")
+        
     else:
-        messagebox.showerror("Error", "Username not found ")
+        messagebox.showerror("Error", "username not found")
+    
 
 def login(root: Tk, cursor):
     root.title("")
