@@ -2,10 +2,10 @@ from tkinter import *
 from tkinter import ttk
 from employee_page.employee_task import task_display
 
+# To-Do :
+# 1. Fix the task function to display the task details
+
 def task(root, cursor, tree, name, user_id):
-    frame.grid_remove()
-    frame_two.grid_remove()
-    welcome_label.grid_remove()
     selected = tree.selection()
     selected_item = tree.item(selected[0], "values")
     cursor.execute(
