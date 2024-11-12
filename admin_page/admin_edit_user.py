@@ -6,13 +6,27 @@ def edit_user(db, cursor, name, password, user_type, tree):
     cursor.execute(
         f"""
         UPDATE user
-        SET user_password = '{password}', user_type = '{user_type}'
-        WHERE user_name = '{name}'
+        SET userpassword = '{password}', usertype = '{user_type}'
+        WHERE username = '{name}'
         """
     )
     selected = tree.selection()
     items = tree.item(selected[0], "values")
     tree.item(selected[0], values=(items[0], name, password, user_type))
+    if items[3] != user_type:
+        if items[3] == 'Employee':
+            cursor.execute(f"DELETE FROM employee WHERE userid = (SELECT userid FROM user WHERE username = '{name}')")
+        elif items[3] == 'Manager':
+            cursor.execute(f"DELETE FROM manager WHERE userid = (SELECT userid FROM user WHERE username = '{name}')")
+        elif items[3] == 'Admin':
+            cursor.execute(f"DELETE FROM admin WHERE userid = (SELECT userid FROM user WHERE username = '{name}')")
+
+        if user_type == 'Employee':
+            cursor.execute(f"INSERT INTO employee (userid) VALUES ((SELECT userid FROM user WHERE username = '{name}'))")
+        elif user_type == 'Manager':
+            cursor.execute(f"INSERT INTO manager (userid) VALUES ((SELECT userid FROM user WHERE username = '{name}'))")
+        elif user_type == 'Admin':
+            cursor.execute(f"INSERT INTO admin (userid) VALUES ((SELECT userid FROM user WHERE username = '{name}'))")
     db.commit()
 
 def open_popup(root, db, cursor, tree):

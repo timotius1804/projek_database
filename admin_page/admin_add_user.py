@@ -6,7 +6,7 @@ from tkinter import *
 def add_user(db, cursor, name, password, user_type, tree):
     cursor.execute(
         f"""
-        INSERT INTO user (user_name, user_password, user_type)
+        INSERT INTO user (username, userpassword, usertype)
         VALUES ('{name}', '{password}', '{user_type}')
         """
     )
@@ -15,8 +15,29 @@ def add_user(db, cursor, name, password, user_type, tree):
         SELECT LAST_INSERT_ID()
         """
     )
-    last_id = cursor.fetchone()[0]
+    last_id = cursor.fetchall()[0][0]
     tree.insert("", "end", values=(last_id, name, password, user_type))
+    if user_type == 'Employee':
+        cursor.execute(
+            f"""
+            INSERT INTO employee (userid)
+            VALUES ({last_id})
+            """
+        )
+    elif user_type == 'Manager':
+        cursor.execute(
+            f"""
+            INSERT INTO manager (userid)
+            VALUES ({last_id})
+            """
+        )
+    elif user_type == 'Admin':
+        cursor.execute(
+            f"""
+            INSERT INTO admin (userid)
+            VALUES ({last_id})
+            """
+        )
     db.commit()
 
 def open_popup(root, db, cursor, tree):

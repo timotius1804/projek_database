@@ -16,7 +16,7 @@ def delete(db, cursor, data, tree):
     tree.delete(selected[0])
     cursor.execute(
         f"""
-        DELETE FROM user WHERE user_id = '{data[0]}'
+        DELETE FROM user WHERE userid = '{data[0]}'
         """
     )
     db.commit()
