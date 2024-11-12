@@ -3,6 +3,24 @@ from tkinter import ttk
 import admin_page.admin_add_user as admin_add_user
 import admin_page.admin_edit_user as admin_edit_user
 
+# To-Do :
+# 4. Set Delete User button to delete selected user and update the database
+# 5. Set Logout button to close the window
+def tree_select(tree):
+    selected = tree.selection()
+    selected_item = tree.item(selected[0], "values")
+    return selected_item
+
+def delete(db, cursor, data, tree):
+    selected = tree.selection()
+    tree.delete(selected[0])
+    cursor.execute(
+        f"""
+        DELETE FROM user WHERE user_id = '{data[0]}'
+        """
+    )
+    db.commit()
+
 def close_window(root):
     root.destroy()
 
@@ -62,32 +80,30 @@ def admin(db, root: Tk, cursor, name, user_id):
     tree.configure(yscrollcommand=scrollbar.set)
 
     # Menambahkan beberapa data contoh ke dalam tabel
-    data = [
-        (1, "Complete project documentation", "In Progress"),
-        (2, "Develop login module", "Completed"),
-        (3, "Test user registration", "Pending"),
-        (4, "Design database schema", "In Progress"),
-        (5, "Review pull requests", "Completed"),
-    ] * 10  # Duplikasi data untuk mengisi lebih banyak baris
+    cursor.execute("SELECT * FROM user")
+    data = cursor.fetchall()  # Duplikasi data untuk mengisi lebih banyak baris
 
-    for row in data:
-        tree.insert("", "end", values=row)
-
+    if data:
+        for row in data:
+            tree.insert("", "end", values=row)
+    else:
+        tree.insert("", "end", values=["", "No Users", "",])
 
     # Menambahkan frame dan tombol di sebelah kanan
     frame_two = Frame(root, borderwidth=0, relief="solid", bg="white")  # Border untuk visualisasi
     frame_two.grid(row=1, column=1, padx=0, pady=20, sticky="nsew")
 
     # Mengatur tombol "Add Task"
-    View_details_button = Button(frame_two, text="Add User", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: admin_add_user.open_popup(root))
+    View_details_button = Button(frame_two, text="Add User", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: admin_add_user.open_popup(root, db, cursor, tree))
     View_details_button.grid(row=0, column=0, sticky="e", pady=10, padx=5)
+    #
 
     # Mengatur tombol "Edit Task"
-    Mark_button = Button(frame_two, text="Edit User", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: admin_edit_user.open_popup(root))
+    Mark_button = Button(frame_two, text="Edit User", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: admin_edit_user.open_popup(root, db, cursor, tree))
     Mark_button.grid(row=1, column=0, sticky="e", pady=10, padx=5)
 
     # Mengatur tombol "Delete Task"
-    Mark_button = Button(frame_two, text="Delete User", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14))
+    Mark_button = Button(frame_two, text="Delete User", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: delete(db, cursor, tree_select(tree), tree))
     Mark_button.grid(row=2, column=0, sticky="e", pady=10, padx=5)
 
     # Menambahkan baris kosong sebelum tombol Logout

@@ -1,6 +1,25 @@
 from tkinter import *
 
-def open_popup(root):
+# To-Do :
+# 1. Add functionality to the Add User button and connect it to the database
+
+def add_user(db, cursor, name, password, user_type, tree):
+    cursor.execute(
+        f"""
+        INSERT INTO user (user_name, user_password, user_type)
+        VALUES ('{name}', '{password}', '{user_type}')
+        """
+    )
+    cursor.execute(
+        """
+        SELECT LAST_INSERT_ID()
+        """
+    )
+    last_id = cursor.fetchone()[0]
+    tree.insert("", "end", values=(last_id, name, password, user_type))
+    db.commit()
+
+def open_popup(root, db, cursor, tree):
     popup = Toplevel(root)
     popup.title("")
     # Ukuran jendela
@@ -42,6 +61,6 @@ def open_popup(root):
     user_type_entry.grid(row=2, column=1, padx=5, pady=5)
 
     # Tombol Add_user
-    Add_user_button = Button(frame, text="Add User")
+    Add_user_button = Button(frame, text="Add User", command=lambda: add_user(db, cursor, name_entry.get(), password_entry.get(), user_type_entry.get(), tree))
     Add_user_button.grid(row=3, column=1, sticky="e", pady=10, padx=5)
 
