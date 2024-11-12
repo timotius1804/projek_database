@@ -2,6 +2,11 @@ from tkinter import *
 from tkcalendar import Calendar
 from datetime import date
 
+# To-Do :
+# 1. Fix the Edit Task button to edit the task to the database
+# 2. Fix the calendar to display the current date and allow the user to select a date
+# 3. Turn the file into a function to be called from the main file
+
 # Membuat jendela utama
 root = Tk()
 root.title("Task Display Form")

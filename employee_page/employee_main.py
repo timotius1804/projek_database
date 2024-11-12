@@ -2,15 +2,12 @@ from tkinter import *
 from tkinter import ttk
 from employee_page.employee_task import task_display
 
-# To-Do :
-# 1. Fix the task function to display the task details
-
 def task(root, cursor, tree, name, user_id):
     selected = tree.selection()
     selected_item = tree.item(selected[0], "values")
     cursor.execute(
 f"""
-SELECT task_name, deskripsi, due_date, status FROM task WHERE taskID = '{selected_item[0]}'
+SELECT taskname, deskripsi, taskdue, status FROM task WHERE taskid = '{selected_item[0]}'
 """
     )
     data = cursor.fetchall()
@@ -25,7 +22,7 @@ def mark_done_button(db, tree, cursor):
     tree.item(selected[0], values=new_values)
     cursor.execute(
 f"""
-UPDATE task SET status = '{new_values[-1]}' WHERE taskID = '{selected_item[0]}'
+UPDATE task SET status = '{new_values[-1]}' WHERE taskid = '{selected_item[0]}'
 """
     )
     db.commit()
@@ -91,15 +88,25 @@ def employee(db, root, cursor, name, user_id):
     tree.configure(yscrollcommand=scrollbar.set)
 
     # Menambahkan beberapa data contoh ke dalam tabel
+    cursor.execute(f"""
+SELECT employeeid from employee where userid = {user_id}
+""")
+    employee_id = cursor.fetchall()[0][0]
     cursor.execute(
 f"""
-SELECT taskID, task_name, due_date, status FROM task WHERE id_employee = '{user_id}'
+SELECT taskid, taskname, taskdue, status FROM task WHERE employeeid = {employee_id}
 """
     )
     data = cursor.fetchall()
     if data:
         for row in data:
             tree.insert("", "end", values=row)
+            if row[3] == "Done": 
+                tree.tag_configure("done", background="lightgreen") 
+                tree.item(tree.get_children()[-1], tags="done") 
+            elif row[3] == "Not Done": 
+                tree.tag_configure("not_done", background="lightcoral") 
+                tree.item(tree.get_children()[-1], tags="not_done")
     else:
         tree.insert("", "end", values=["", "No Task", "",])
 

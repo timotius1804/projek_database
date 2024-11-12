@@ -1,9 +1,40 @@
 from tkinter import *
 from tkinter import ttk
+from manager_page.manager_task import taskProject
 
 def close_window(root):
     root.destroy()
 
+def tree_select(tree):
+    selected = tree.selection()
+    selected_item = tree.item(selected[0], "values")
+    return selected_item
+
+def task_view(root, db, cursor, tree):
+    selected = tree.selection()
+    project_id = tree.item(selected[0], "values")[0]
+    taskProject(root, db, cursor, project_id)
+
+def delete(db, cursor, data, tree):
+    selected = tree.selection()
+    tree.delete(selected[0])
+    cursor.execute(
+        f"""
+        DELETE FROM task WHERE projectid = {data[0]}
+        """
+    )
+    cursor.execute(
+        f"""
+        DELETE FROM project WHERE projectid = {data[0]}
+        """
+    )
+    db.commit()
+
+def add_project():
+    pass
+
+def edit_project():
+    pass
 # Membuat window utama
 def manager(db, root: Tk, cursor, name, user_id):
     root.configure(bg="white")
@@ -60,17 +91,32 @@ def manager(db, root: Tk, cursor, name, user_id):
     tree.configure(yscrollcommand=scrollbar.set)
 
     # Menambahkan beberapa data contoh ke dalam tabel
-    data = [
-        (1, "Complete project documentation", "In Progress"),
-        (2, "Develop login module", "Completed"),
-        (3, "Test user registration", "Pending"),
-        (4, "Design database schema", "In Progress"),
-        (5, "Review pull requests", "Completed"),
-    ] * 10  # Duplikasi data untuk mengisi lebih banyak baris
+    cursor.execute(
+    f"""
+    select p.projectid, count(t.taskid) from project p left join task t on p.projectid = t.projectid and t.status = 'Done' group by p.projectid
+    """
+        )
+    done_tasks = cursor.fetchall()
+    cursor.execute(
+    f"""
+    select p.projectid, count(t.taskid) from project p left join task t on p.projectid = t.projectid group by p.projectid
+    """
+        )
+    total_tasks = cursor.fetchall()
+        # Ambil data dari database untuk manager (id project, nama project, jumlah task, status project)
+    cursor.execute(
+    """
+    select p.projectid, p.projectname, p.projectstatus from project p
+    """
+        )
+    data = cursor.fetchall()
+    if data:
+        data = [(data[i][0], data[i][1], f"{done_tasks[i][1]}/{total_tasks[i][1]}", "Not Done" if (done_tasks[i][1] != total_tasks[i][1]) else "Done") for i in range(len(data))]
 
-    for row in data:
-        tree.insert("", "end", values=row)
-
+        for row in data:
+            tree.insert("", "end", values=row)
+    else:
+        tree.insert("", "end", values=["", "No Projects", "",])
     # Menambahkan frame dan tombol di sebelah kanan
     frame_two = Frame(root, borderwidth=0, relief="solid", bg="white")  # Border untuk visualisasi
     frame_two.grid(row=1, column=1, padx=0, pady=20, sticky="nsew")
@@ -84,11 +130,11 @@ def manager(db, root: Tk, cursor, name, user_id):
     Edit_button.grid(row=1, column=0, sticky="e", pady=10, padx=5)
 
     # Mengatur tombol "Delete Project"
-    Delete_button = Button(frame_two, text="Delete Project", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14))
+    Delete_button = Button(frame_two, text="Delete Project", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: delete(db, cursor, tree_select(tree), tree))
     Delete_button.grid(row=2, column=0, sticky="e", pady=10, padx=5)
 
     # Mengatur tombol "View Tasks"
-    View_button = Button(frame_two, text="View Tasks", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14))
+    View_button = Button(frame_two, text="View Tasks", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: task_view(root, db, cursor, tree))
     View_button.grid(row=3, column=0, sticky="e", pady=10, padx=5)
 
     # Menambahkan baris kosong sebelum tombol Logout

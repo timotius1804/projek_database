@@ -3,77 +3,112 @@ create database companyDB;
 use companyDB;
 
 create table user(
-	user_id  int auto_increment primary key ,
-	user_name  varchar(50)  not null unique,
-	user_password varchar(50)  not null,
-    user_type enum('Employee','Admin','Manager')
+	userid  int auto_increment primary key ,
+	username  varchar(50)  not null unique,
+	userpassword varchar(50)  not null,
+    usertype enum('Employee','Admin','Manager')
 );
 
 CREATE TABLE employee (
-    employee_id INT PRIMARY KEY auto_increment,
-    user_id INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES user(user_id)
+    employeeid INT PRIMARY KEY auto_increment,
+    userid INT NOT NULL,
+    FOREIGN KEY (userid) REFERENCES user(userid)
 );
 CREATE TABLE manager (
-    manager_id INT PRIMARY KEY auto_increment,
-    user_id INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES user(user_id)
+    managerid INT PRIMARY KEY auto_increment,
+    userid INT NOT NULL,
+    FOREIGN KEY (userid) REFERENCES user(userid)
 );
 
 CREATE TABLE admin (
-    admin_id INT PRIMARY KEY auto_increment,
-    user_id INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES user(user_id)
+    adminid INT PRIMARY KEY auto_increment,
+    userid INT NOT NULL,
+    FOREIGN KEY (userid) REFERENCES user(userid)
 );
 
 
 create table project
 (
-	ProjectID  int primary key auto_increment,
-	Project_name varchar(50) not null,
-	manager_id int not null,
-	foreign key(manager_id) references manager(manager_id)
+	projectid  int primary key auto_increment,
+	projectname varchar(50) not null,
+	managerid int not null,
+    projectstatus enum('Not Done', 'Done') not null default 'Not Done',
+	foreign key(managerid) references manager(managerid)
 );
 
 create table task
 (
- taskID  int primary key auto_increment,
- task_name varchar(50) not null,
+ taskid  int primary key auto_increment,
+ taskname varchar(50) not null,
  deskripsi text null,
- id_employee int not null,
- project_id int not null,
+ employeeid int not null,
+ projectid int not null,
+ taskdue date ,
  status enum('Not Done', 'Done') not null default 'Not Done',
- foreign key (project_id) references project(ProjectID),
- foreign key (id_employee) references employee(employee_id)
+ foreign key (projectid) references project(projectid),
+ foreign key (employeeid) references employee(employeeid)
 );
 
 -- Insert sample data into user table
-INSERT INTO user (user_name, user_password, user_type) VALUES 
+INSERT INTO user (username, userpassword, usertype) VALUES 
 ('john_doe', 'password123', 'Employee'),
 ('jane_smith', 'password456', 'Manager'),
 ('admin_user', 'adminpass', 'Admin');
 
 -- Insert sample data into employee table
-INSERT INTO employee (user_id) VALUES 
-((SELECT user_id FROM user WHERE user_name = 'john_doe'));
+INSERT INTO employee (userid) VALUES 
+((SELECT userid FROM user WHERE username = 'john_doe'));
 
 -- Insert sample data into manager table
-INSERT INTO manager (user_id) VALUES 
-((SELECT user_id FROM user WHERE user_name = 'jane_smith'));
+INSERT INTO manager (userid) VALUES 
+((SELECT userid FROM user WHERE username = 'jane_smith'));
 
 -- Insert sample data into admin table
-INSERT INTO admin (user_id) VALUES 
-((SELECT user_id FROM user WHERE user_name = 'admin_user'));
+INSERT INTO admin (userid) VALUES 
+((SELECT userid FROM user WHERE username = 'admin_user'));
 
 -- Insert sample data into project table
-INSERT INTO project (Project_name, manager_id) VALUES 
-('Project Alpha', (SELECT manager_id FROM manager m JOIN user u ON m.user_id = u.user_id WHERE u.user_name = 'jane_smith'));
+INSERT INTO project (Projectname, managerid) VALUES 
+('Project Alpha', (SELECT managerid FROM manager m JOIN user u ON m.userid = u.userid WHERE u.username = 'jane_smith'));
 
 -- Insert sample data into task table
-INSERT INTO task (task_name, deskripsi, id_employee, project_id) VALUES 
-('Task 1', 'Description for Task 1', (SELECT employee_id FROM employee e JOIN user u ON e.user_id = u.user_id WHERE u.user_name = 'john_doe'), (SELECT ProjectID FROM project WHERE Project_name = 'Project Alpha'));
+INSERT INTO task (taskname, deskripsi, idemployee, projectid) VALUES 
+('Task 1', 'Description for Task 1', (SELECT employeeid FROM employee e JOIN user u ON e.userid = u.userid WHERE u.username = 'john_doe'), (SELECT projectid FROM project WHERE Projectname = 'Project Alpha'));
 
-select e.employee_id from employee e
-join user u on u.user_id = e.user_id;
+select e.employeeid from employee e
+join user u on u.userid = e.userid;
 
 
+-- additional sample data
+
+
+-- Insert more sample data into user table
+INSERT INTO user (username, userpassword, usertype) VALUES 
+('alice_jones', 'alicepass', 'Employee'),
+('bob_brown', 'bobspassword', 'Employee'),
+('charlie_manager', 'charlie123', 'Manager'),
+('david_admin', 'davidadmin', 'Admin');
+
+-- Insert more sample data into employee table
+INSERT INTO employee (userid) VALUES 
+((SELECT userid FROM user WHERE username = 'alice_jones')),
+((SELECT userid FROM user WHERE username = 'bob_brown'));
+
+-- Insert more sample data into manager table
+INSERT INTO manager (userid) VALUES 
+((SELECT userid FROM user WHERE username = 'charlie_manager'));
+
+-- Insert more sample data into admin table
+INSERT INTO admin (userid) VALUES 
+((SELECT userid FROM user WHERE username = 'david_admin'));
+
+-- Insert more sample data into project table
+INSERT INTO project (projectname, managerid) VALUES 
+('Project Beta', (SELECT managerid FROM manager m JOIN user u ON m.userid = u.userid WHERE u.username = 'jane_smith')),
+('Project Gamma', (SELECT managerid FROM manager m JOIN user u ON m.userid = u.userid WHERE u.username = 'charlie_manager'));
+
+-- Insert more sample data into task table
+INSERT INTO task (taskname, deskripsi, employeeid, projectid, taskdue, status) VALUES 
+('Task 2', 'Description for Task 2', (SELECT employeeid FROM employee e JOIN user u ON e.userid = u.userid WHERE u.username = 'alice_jones'), (SELECT projectid FROM project WHERE projectname = 'Project Beta'), CURRENT_DATE + INTERVAL 5 DAY, 'Not Done'),
+('Task 3', 'Description for Task 3', (SELECT employeeid FROM employee e JOIN user u ON e.userid = u.userid WHERE u.username = 'bob_brown'), (SELECT projectid FROM project WHERE projectname = 'Project Gamma'), CURRENT_DATE + INTERVAL 10 DAY, 'Not Done'),
+('Task 4', 'Description for Task 4', (SELECT employeeid FROM employee e JOIN user u ON e.userid = u.userid WHERE u.username = 'john_doe'), (SELECT projectid FROM project WHERE projectname = 'Project Alpha'), CURRENT_DATE + INTERVAL 3 DAY, 'Done');

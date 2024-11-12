@@ -9,7 +9,7 @@ def button_konfirmasi(db, root, cursor, frame, name_entry, password_entry):
     user_password = password_entry.get()
     cursor.execute(
 f"""
-select * from user where user_name = '{user_name}'; 
+select * from user where username = '{user_name}'; 
 """
 )
     data = cursor.fetchall()
