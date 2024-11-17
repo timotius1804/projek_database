@@ -30,12 +30,6 @@ def delete(db, cursor, data, tree):
         """
     )
     db.commit()
-
-def add_project():
-    pass
-
-def edit_project():
-    pass
 # Membuat window utama
 def manager(db, root: Tk, cursor, name, user_id):
     cursor.execute(
@@ -136,7 +130,7 @@ def manager(db, root: Tk, cursor, name, user_id):
     # Mengatur tombol "Add Project"
     button_width = int(screen_width - screen_width * 0.96484375)
     text_font = ('Inter', 14)
-    Add_details_button = Button(frame_two, text="Add Project", width=button_width  ,  height=2, font=text_font, command=lambda: manager_add_project(root, db, cursor, tree))
+    Add_details_button = Button(frame_two, text="Add Project", width=button_width  ,  height=2, font=text_font, command=lambda: manager_add_project(root, db, cursor, tree, manager_id[0]))
     Add_details_button.grid(row=0, column=0, sticky="e", pady=10, padx=5)
 
     # Mengatur tombol "Edit Project"

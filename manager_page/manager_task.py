@@ -10,7 +10,16 @@ from manager_page.manager_edit_task import manager_edit_task
 # 4. Turn the file into a function to be called from the main file 
 #    that accepts project identifier as an argument
 
-
+def delete_task(db, cursor, tree):
+    selected = tree.selection()
+    task_id = tree.item(selected[0], "values")[0]
+    cursor.execute(
+        f"""
+        DELETE FROM task WHERE taskid = '{task_id}'
+        """
+    )
+    db.commit()
+    tree.delete(tree.selection())
 # Membuat window utama
 def taskProject(root, db, cursor, project_id):
     task_window = Toplevel(root)
@@ -86,7 +95,7 @@ SELECT taskid, taskname, taskdue, status FROM task WHERE projectid = '{project_i
     frame_two.grid(row=1, column=1, padx=0, pady=20, sticky="nsew")
 
     # Mengatur tombol "Add Task"
-    View_details_button = Button(frame_two, text="Add Task", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: manager_add_task(task_window, db, cursor, tree))
+    View_details_button = Button(frame_two, text="Add Task", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: manager_add_task(task_window, db, cursor, tree, project_id))
     View_details_button.grid(row=0, column=0, sticky="e", pady=10, padx=5)
 
     # Mengatur tombol "Edit Task"
@@ -94,7 +103,7 @@ SELECT taskid, taskname, taskdue, status FROM task WHERE projectid = '{project_i
     Mark_button.grid(row=1, column=0, sticky="e", pady=10, padx=5)
 
     # Mengatur tombol "Delete Task"
-    Delete_button = Button(frame_two, text="Delete Task", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14))
+    Delete_button = Button(frame_two, text="Delete Task", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: delete_task(db, cursor, tree))
     Delete_button.grid(row=2, column=0, sticky="e", pady=10, padx=5)
 
     # Menambahkan baris kosong sebelum tombol Logout
