@@ -1,5 +1,7 @@
 from tkinter import *
 from tkinter import ttk
+from manager_page.manager_add_task import manager_add_task
+from manager_page.manager_edit_task import manager_edit_task
 
 # To-Do :
 # 1. Turn logout button into back button
@@ -84,11 +86,11 @@ SELECT taskid, taskname, taskdue, status FROM task WHERE projectid = '{project_i
     frame_two.grid(row=1, column=1, padx=0, pady=20, sticky="nsew")
 
     # Mengatur tombol "Add Task"
-    View_details_button = Button(frame_two, text="Add Task", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14))
+    View_details_button = Button(frame_two, text="Add Task", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: manager_add_task(task_window, db, cursor, tree))
     View_details_button.grid(row=0, column=0, sticky="e", pady=10, padx=5)
 
     # Mengatur tombol "Edit Task"
-    Mark_button = Button(frame_two, text="Edit Task", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14))
+    Mark_button = Button(frame_two, text="Edit Task", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: manager_edit_task(task_window, db, cursor, tree))
     Mark_button.grid(row=1, column=0, sticky="e", pady=10, padx=5)
 
     # Mengatur tombol "Delete Task"

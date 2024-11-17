@@ -7,7 +7,7 @@ from datetime import date
 # 2. Fix the calendar to display the current date and allow the user to select a date
 # 3. Turn the file into a function to be called from the main file
 
-def manager_add_project(root, db, cursor):
+def manager_add_project(root, db, cursor, tree):
     window = Toplevel(root)
     window.title("Task Display Form")
 

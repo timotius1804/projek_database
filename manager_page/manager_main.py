@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter import ttk
 from manager_page.manager_task import taskProject
+from manager_page.manager_add_project import manager_add_project
+from manager_page.manager_edit_project import manager_edit_project
 
 def close_window(root):
     root.destroy()
@@ -11,8 +13,7 @@ def tree_select(tree):
     return selected_item
 
 def task_view(root, db, cursor, tree):
-    selected = tree.selection()
-    project_id = tree.item(selected[0], "values")[0]
+    project_id = tree_select(tree)[0]
     taskProject(root, db, cursor, project_id)
 
 def delete(db, cursor, data, tree):
@@ -37,6 +38,11 @@ def edit_project():
     pass
 # Membuat window utama
 def manager(db, root: Tk, cursor, name, user_id):
+    cursor.execute(
+        f"""
+        select managerid from manager where userid = {user_id}
+        """)
+    manager_id = cursor.fetchall()[0]
     root.configure(bg="white")
     root.attributes("-fullscreen", True)
     root.title("Employee Task Table")
@@ -93,20 +99,26 @@ def manager(db, root: Tk, cursor, name, user_id):
     # Menambahkan beberapa data contoh ke dalam tabel
     cursor.execute(
     f"""
-    select p.projectid, count(t.taskid) from project p left join task t on p.projectid = t.projectid and t.status = 'Done' group by p.projectid
+    select p.projectid, count(t.taskid) from project p 
+    left join task t on p.projectid = t.projectid and t.status = 'Done' 
+    where p.managerid = {manager_id[0]}
+    group by p.projectid
     """
-        )
+    )
     done_tasks = cursor.fetchall()
     cursor.execute(
     f"""
-    select p.projectid, count(t.taskid) from project p left join task t on p.projectid = t.projectid group by p.projectid
+    select p.projectid, count(t.taskid) from project p 
+    left join task t on p.projectid = t.projectid 
+    where p.managerid = {manager_id[0]}
+    group by p.projectid    
     """
-        )
+    )
     total_tasks = cursor.fetchall()
         # Ambil data dari database untuk manager (id project, nama project, jumlah task, status project)
     cursor.execute(
-    """
-    select p.projectid, p.projectname, p.projectstatus from project p
+    f"""
+    select projectid, projectname, projectstatus from project where managerid = {manager_id[0]}
     """
         )
     data = cursor.fetchall()
@@ -122,19 +134,21 @@ def manager(db, root: Tk, cursor, name, user_id):
     frame_two.grid(row=1, column=1, padx=0, pady=20, sticky="nsew")
 
     # Mengatur tombol "Add Project"
-    Add_details_button = Button(frame_two, text="Add Project", width=int(screen_width - screen_width * 0.96484375)  ,  height=2, font=('Inter', 14))
+    button_width = int(screen_width - screen_width * 0.96484375)
+    text_font = ('Inter', 14)
+    Add_details_button = Button(frame_two, text="Add Project", width=button_width  ,  height=2, font=text_font, command=lambda: manager_add_project(root, db, cursor, tree))
     Add_details_button.grid(row=0, column=0, sticky="e", pady=10, padx=5)
 
     # Mengatur tombol "Edit Project"
-    Edit_button = Button(frame_two, text="Edit Project", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14))
+    Edit_button = Button(frame_two, text="Edit Project", width=button_width,  height=2, font=text_font, command=lambda: manager_edit_project(root, db, cursor, tree))
     Edit_button.grid(row=1, column=0, sticky="e", pady=10, padx=5)
 
     # Mengatur tombol "Delete Project"
-    Delete_button = Button(frame_two, text="Delete Project", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: delete(db, cursor, tree_select(tree), tree))
+    Delete_button = Button(frame_two, text="Delete Project", width=button_width,  height=2, font=text_font, command=lambda: delete(db, cursor, tree_select(tree), tree))
     Delete_button.grid(row=2, column=0, sticky="e", pady=10, padx=5)
 
     # Mengatur tombol "View Tasks"
-    View_button = Button(frame_two, text="View Tasks", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: task_view(root, db, cursor, tree))
+    View_button = Button(frame_two, text="View Tasks", width=button_width,  height=2, font=text_font, command=lambda: task_view(root, db, cursor, tree))
     View_button.grid(row=3, column=0, sticky="e", pady=10, padx=5)
 
     # Menambahkan baris kosong sebelum tombol Logout
