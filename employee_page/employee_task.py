@@ -2,8 +2,6 @@ from tkinter import *
 from tkcalendar import Calendar
 from datetime import date
 
-# To-Do :
-# 1. Fix the back button to return to the previous window
 def back():
     task_window.destroy()
 
@@ -13,9 +11,6 @@ def task_display(root: Tk, cursor, data, name, user_id):
     task_window = Toplevel(root)
     task_window.attributes("-fullscreen", True)
     task_window.title("Task Display Form")
-
-    # Mengatur jendela menjadi fullscreen
-    task_window.attributes("-fullscreen", True)
     task_window.configure(bg="white")
 
     # informasi lebar layar
