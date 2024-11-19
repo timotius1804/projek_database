@@ -65,15 +65,17 @@ def open_popup(root, db, cursor, tree):
     # Label dan Entry untuk Password
     password_label = Label(frame, text=f"Password  {'':<3}:")
     password_label.grid(row=1, column=0, sticky="w", padx=5, pady=5)
-    password_entry = Entry(frame, show="*")
+    password_entry = Entry(frame)
     password_entry.insert(0, items[2])
     password_entry.grid(row=1, column=1, padx=5, pady=5)
 
     # Label dan Entry untuk user_type
     user_type_label = Label(frame, text=f"User Type  {'':<3}:")
     user_type_label.grid(row=2, column=0, sticky="w", padx=5, pady=5)
-    user_type_entry = Entry(frame, show="*")
-    user_type_entry.insert(0, items[3])
+    user_type_var = StringVar(popup)
+    user_type_var.set(items[3])
+    user_types = ["Employee", "Manager", "Admin"]
+    user_type_entry = OptionMenu(frame, user_type_var, *user_types)
     user_type_entry.grid(row=2, column=1, padx=5, pady=5)
 
     # Tombol Edit_user
