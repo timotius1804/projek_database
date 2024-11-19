@@ -29,7 +29,7 @@ def manager_add_project(root, db, cursor, tree, manager_id):
 
     # Mengatur jendela menjadi fullscreen
     window.attributes("-fullscreen", True)
-    window.configure(bg="white")
+    window.configure(bg="#faebd7")
 
     # informasi lebar layar
     screen_width = window.winfo_screenwidth()
@@ -46,6 +46,6 @@ def manager_add_project(root, db, cursor, tree, manager_id):
     frame.grid(row=3, column=1, pady=5)
 
     # Tombol Add Task
-    Back_button = Button(frame, text="Add Project", height=2, width=10, font=('Inter', 14), command=lambda: add_project(window, db, cursor, label_task_name_value.get(), manager_id, tree))
+    Back_button = Button(frame,bg="white", text="Add Project", height=2, width=10, font=('Inter', 14), command=lambda: add_project(window, db, cursor, label_task_name_value.get(), manager_id, tree))
     Back_button.grid(row=0, column=1, padx=(int(screen_width*0.46875), 20), pady=(20, 20), sticky="se")
 

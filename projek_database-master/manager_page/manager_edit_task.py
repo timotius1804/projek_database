@@ -7,11 +7,26 @@ import os as window
 # 1. Fix the Edit Task button to edit the task to the database
 # 2. Fix the calendar to display the current date and allow the user to select a date
 # 3. Turn the file into a function to be called from the main file
-def edit_task(root, db, cursor, task_id, name_label, description_label, employee_id_label, due_date_label, status, tree):
+
+
+#Mengambil id employee berdasarkan usernamenya
+def ambil_employee_id(cursor,employee_name):
+    cursor.execute(
+        f"""
+        select userid from user
+        where username = "{employee_name}";
+        """
+    )
+    hasil = cursor.fetchall()
+    return hasil[0][0]
+
+
+
+def edit_task(root, db, cursor, task_id, name_label, description_label, employee_id_label, due_date_label, status, tree,tree_main):#tree main juga di add disini :
     name = name_label.get()
     description = description_label.get("1.0", END)
     due_date = due_date_label.get()
-    employee_id = employee_id_label.get()
+    employee_id = ambil_employee_id(cursor,employee_id_label)
     name_label.delete(0, END)
     description_label.delete("1.0", END)
     due_date_label.delete(0, END)
@@ -24,15 +39,13 @@ def edit_task(root, db, cursor, task_id, name_label, description_label, employee
         """
     )
     tree.item(tree.selection()[0], values=(task_id, name, due_date, status))
+    tree_main.item(tree_main.selection()[0], values=(task_id,name,due_date,status))
     db.commit()
     root.destroy()
 
-    # Tombol Kembali
-    back_button = Button(window, text="Back", height=2, width=10, font=('Inter', 14), command=window.destroy)
-    back_button.grid(row=4, column=0, padx=(20, 20), pady=(20, 20), sticky="w")
 
 # Membuat jendela utama
-def manager_edit_task(root, db, cursor, tree):
+def manager_edit_task(root, db, cursor, tree, tree_main):
     selected = tree.selection()
     items = tree.item(selected[0], "values")
     task_id = items[0]
@@ -47,7 +60,7 @@ def manager_edit_task(root, db, cursor, tree):
 
     # Mengatur jendela menjadi fullscreen
     window.attributes("-fullscreen", True)
-    window.configure(bg="white")
+    window.configure(bg="#faebd7")
 
     # informasi lebar layar
     screen_width = window.winfo_screenwidth()
@@ -61,7 +74,7 @@ def manager_edit_task(root, db, cursor, tree):
 
     label_task_employee = Label(window, text="Employee Name:", font=("Arial", 14), bg="white")
     label_task_employee_value = Entry(window, text="employee", font=("Arial", 14), bg="#ECECEC")
-    label_task_employee_value.insert(0, values[3])
+    
     label_task_employee.grid(row=1, column=0, sticky="e", padx=(20, 10), pady=(20, 10))
     label_task_employee_value.grid(row=1, column=1, sticky="w", padx=(10, 20), pady=(20, 10))
 
@@ -93,14 +106,14 @@ def manager_edit_task(root, db, cursor, tree):
     # Kalender menggunakan tkcalendar
     calendar = Calendar(frame, selectmode="day", date_pattern="yyyy-mm-dd")
     calendar.selection_set(values[5])  # Set the calendar to the initial value from the selected item
-    calendar.grid(row=0, column=0, padx=(10, 20), pady=(20, 20), sticky="w")  # Gunakan sticky="w" untuk rata kiri
+    calendar.grid(row=0, column=5, padx=(10, 20), pady=(20, 20), sticky="w")  # Gunakan sticky="w" untuk rata kiri
 
     def update_due_date_value(event):
         label_due_date_value.delete(0, END)
         label_due_date_value.insert(0, calendar.get_date())
     calendar.bind("<<CalendarSelected>>", update_due_date_value)
     # Tombol Add Task
-    Back_button = Button(frame, text="Edit Task", height=2, width=10, font=('Inter', 14), command=lambda: edit_task(window, db, cursor, task_id, label_task_name_value, text_task_description, label_task_employee_value, label_due_date_value, values[6], tree))
+    Back_button = Button(frame,bg="white", text="Edit Task", height=2, width=10, font=('Inter', 14), command=lambda: edit_task(window, db, cursor, task_id, label_task_name_value, text_task_description, label_task_employee_value, label_due_date_value, values[6], tree,tree_main))
     Back_button.grid(row=0, column=1, padx=(int(screen_width*0.46875), 20), pady=(20, 20), sticky="se")
 
 

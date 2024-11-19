@@ -32,7 +32,7 @@ def close_window(root):
 
 # Membuat window utama
 def employee(db, root, cursor, name, user_id):
-    root.configure(bg="white")
+    root.configure(bg="#faebd7")
     root.attributes("-fullscreen", True)
     root.title("Employee Task Table")
 
@@ -116,18 +116,18 @@ SELECT taskid, taskname, taskdue, status FROM task WHERE employeeid = {employee_
     frame_two.grid(row=1, column=1, padx=0, pady=20, sticky="nsew")
 
     # Mengatur tombol "View details"
-    View_details_button = Button(frame_two, text="View details", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: task(root, cursor, tree, name, user_id))
+    View_details_button = Button(frame_two,bg="white", text="View details", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: task(root, cursor, tree, name, user_id))
     View_details_button.grid(row=0, column=0, sticky="e", pady=10, padx=5)
 
     # Mengatur tombol "Mark as Done / Not Done"
-    Mark_button = Button(frame_two, text="Mark as Done /\nNot Done", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: mark_done_button(db, tree, cursor))
+    Mark_button = Button(frame_two,bg="white", text="Mark as Done /\nNot Done", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: mark_done_button(db, tree, cursor))
     Mark_button.grid(row=1, column=0, sticky="e", pady=10, padx=5)
 
     # Menambahkan baris kosong sebelum tombol Logout
     frame_two.grid_rowconfigure(2, weight=1)  # Membiarkan baris 2 mengambil sisa ruang
 
     # Mengatur tombol "Logout" di pojok kanan bawah
-    Logout_button = Button(frame_two, text="Logout", width=int(screen_width - screen_width * 0.99453125), height=1, font=('Inter'), command=lambda: close_window(root)) 
+    Logout_button = Button(frame_two,bg="white", text="Logout", width=int(screen_width - screen_width * 0.99453125), height=1, font=('Inter'), command=lambda: close_window(root)) 
     Logout_button.grid(row=3, column=0, sticky="se", pady=10, padx=5)  # Pindahkan ke baris 3
 
     # Mengatur agar frame dua dan treeview bisa menyesuaikan ukuran

@@ -7,7 +7,7 @@ if __name__ == "__main__":
     mydb = mysql.connector.connect(
         host = "localhost",
         user = "root",
-        password = "Yeet_mydatabase2"
+        password = "boimau17"
     )
     mycursor = mydb.cursor()
     mycursor.execute("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'companyDB'")
@@ -26,5 +26,9 @@ if __name__ == "__main__":
 
     root = Tk()
     login.login(mydb, root, mycursor)
+
+    root.attributes("-fullscreen", True)
+    root.bind("<Escape>", lambda event: root.attributes("-fullscreen", False))
+
 
     root.mainloop()

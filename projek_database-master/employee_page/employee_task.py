@@ -11,7 +11,7 @@ def task_display(root: Tk, cursor, data, name, user_id):
     task_window = Toplevel(root)
     task_window.attributes("-fullscreen", True)
     task_window.title("Task Display Form")
-    task_window.configure(bg="white")
+    task_window.configure(bg="#faebd7")
 
     # informasi lebar layar
     screen_width = task_window.winfo_screenwidth()
@@ -63,7 +63,7 @@ def task_display(root: Tk, cursor, data, name, user_id):
     calendar.grid(row=0, column=0, padx=(10, 0), pady=(20, 20), sticky="w")
 
     # Tombol Back
-    Back_button = Button(frame, text="Back",  height=2,width=10, font=('Inter', 14),command=back)
+    Back_button = Button(frame,bg="white", text="Back",  height=2,width=10, font=('Inter', 14),command=back)
     Back_button.grid(row=0, column=1, padx=int(screen_width*0.49), pady=(20, 20), sticky="se")
 
 

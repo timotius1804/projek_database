@@ -29,7 +29,7 @@ def manager_edit_project(root, db, cursor, tree):
 
     # Mengatur jendela menjadi fullscreen
     popup.attributes("-fullscreen", True)
-    popup.configure(bg="white")
+    popup.configure(bg="#faebd7")
 
     # informasi lebar layar
     screen_width = popup.winfo_screenwidth()
@@ -46,7 +46,7 @@ def manager_edit_project(root, db, cursor, tree):
     frame.grid(row=3, column=1, pady=5)
 
     # Tombol Add Task
-    Back_button = Button(frame, text="Edit Project", height=2, width=10, font=('Inter', 14), command=lambda: edit_project(popup, db, cursor, items[0], label_task_name_value, tree))
+    Back_button = Button(frame,bg="white", text="Edit Project", height=2, width=10, font=('Inter', 14), command=lambda: edit_project(popup, db, cursor, items[0], label_task_name_value, tree))
     Back_button.grid(row=2, column=2, padx=(int(screen_width*0.46875), 20), pady=(20, 20), sticky="se")
 
 
