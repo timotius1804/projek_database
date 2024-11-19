@@ -25,7 +25,7 @@ def close_window(root):
     root.destroy()
 
 def admin(db, root: Tk, cursor, name, user_id):
-    root.configure(bg="white")
+    root.configure(bg="#faebd7")
     root.attributes("-fullscreen", True)
     root.title("Employee Task Table")
 
