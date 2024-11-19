@@ -6,11 +6,23 @@ from datetime import date
 # 1. Fix the Edit Task button to edit the task to the database
 # 2. Fix the calendar to display the current date and allow the user to select a date
 # 3. Turn the file into a function to be called from the main file
-def edit_task(root, db, cursor, task_id, name_label, description_label, employee_id_label, due_date_label, status, tree):
-    name = name_label.get()
+def ambil_employee_id(cursor,employee_name):
+    cursor.execute(
+        f"""
+        select userid from user
+        where username = "{employee_name}";
+        """
+    )
+    hasil = cursor.fetchall()
+    return hasil[0][0]
+
+
+
+def edit_task(root, db, cursor, task_id, name_label, description_label, employee_id_label, due_date_label, status, tree,tree_main):#tree main juga di add disini :    name = name_label.get()
     description = description_label.get("1.0", END)
     due_date = due_date_label.get()
-    employee_id = employee_id_label.get()
+    employee_id = ambil_employee_id(cursor,employee_id_label)
+    name = name_label.get()
     name_label.delete(0, END)
     description_label.delete("1.0", END)
     due_date_label.delete(0, END)
@@ -23,10 +35,11 @@ def edit_task(root, db, cursor, task_id, name_label, description_label, employee
         """
     )
     tree.item(tree.selection()[0], values=(task_id, name, due_date, status))
+    tree_main.item(tree_main.selection()[0], values=(task_id,name,due_date,status))
     db.commit()
     root.destroy()
 # Membuat jendela utama
-def manager_edit_task(root, db, cursor, tree):
+def manager_edit_task(root, db, cursor, tree, tree_main):
     selected = tree.selection()
     items = tree.item(selected[0], "values")
     task_id = items[0]
@@ -94,5 +107,5 @@ def manager_edit_task(root, db, cursor, tree):
         label_due_date_value.insert(0, calendar.get_date())
     calendar.bind("<<CalendarSelected>>", update_due_date_value)
     # Tombol Add Task
-    Back_button = Button(frame, text="Edit Task", height=2, width=10, font=('Inter', 14), command=lambda: edit_task(window, db, cursor, task_id, label_task_name_value, text_task_description, label_task_employee_value, label_due_date_value, values[6], tree))
+    Back_button = Button(frame, text="Edit Task", height=2, width=10, font=('Inter', 14), command=lambda: edit_task(window, db, cursor, task_id, label_task_name_value, text_task_description, label_task_employee_value, label_due_date_value, values[6], tree, tree_main))
     Back_button.grid(row=0, column=1, padx=(int(screen_width*0.46875), 20), pady=(20, 20), sticky="se")

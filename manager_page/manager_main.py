@@ -12,9 +12,9 @@ def tree_select(tree):
     selected_item = tree.item(selected[0], "values")
     return selected_item
 
-def task_view(root, db, cursor, tree):
-    project_id = tree_select(tree)[0]
-    taskProject(root, db, cursor, project_id)
+def task_view(root, db, cursor, tree_main):
+    project_id = tree_select(tree_main)[0]
+    taskProject(root, db, cursor, project_id, tree_main)
 
 def delete(db, cursor, data, tree):
     selected = tree.selection()
