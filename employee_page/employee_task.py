@@ -18,7 +18,7 @@ def task_display(root: Tk, cursor, data, name, user_id):
 
     # Label untuk Task Name (hanya teks)
     label_task_name = Label(task_window, text="Task Name:", font=("Arial", 14), bg="white")
-    label_task_name_value = Label(task_window, text=f"{data}", font=("Arial", 14), bg="#ECECEC")
+    label_task_name_value = Label(task_window, text=f"{data[0][0]}", font=("Arial", 14), bg="#ECECEC")
     label_task_name.grid(row=0, column=0, sticky="e", padx=(20, 10), pady=(20, 10))
     label_task_name_value.grid(row=0, column=1, sticky="w", padx=(10, 20), pady=(20, 10))
 
@@ -36,8 +36,7 @@ def task_display(root: Tk, cursor, data, name, user_id):
     text_task_description.configure(yscrollcommand=scrollbar.set)
 
     # Masukkan teks deskripsi ke dalam Text widget
-    task_description_text = data  # Ambil deskripsi dari data
-    text_task_description.insert("1.0", task_description_text)
+    text_task_description.insert("1.0", data[0][1])
 
     # Atur agar teks tidak bisa diedit oleh pengguna
     text_task_description.config(state="disabled")
@@ -48,19 +47,23 @@ def task_display(root: Tk, cursor, data, name, user_id):
 
     # Label untuk Due Date (hanya teks)
     label_due_date = Label(task_window, text="Due Date:", font=("Arial", 14), bg="white")
-    today = date.today()
-    due_date_text = today.strftime("%d/%m/%Y") + " (5 days)"  # Contoh tanggal dan sisa hari
-    label_due_date_value = Label(task_window, text=due_date_text, font=("Arial", 14), bg="#ECECEC")
+    due_date = data[0][2]  # Assuming the due date is in the third column of the data
+    due_date_text = due_date.strftime("%Y-%m-%d")
+    remaining_days = (due_date - date.today()).days
+    label_due_date_value = Label(task_window, text=f"{due_date} ({remaining_days} days remaining)", font=("Arial", 14), bg="#ECECEC")
     label_due_date.grid(row=2, column=0, sticky="e", padx=(20, 10), pady=(20, 10))
     label_due_date_value.grid(row=2, column=1, sticky="w", padx=(10, 20), pady=(20, 10))
 
     # frame untuk calender dan exit button
-    frame = Frame(task_window,bg="white")
+    frame = Frame(task_window, bg="white")
     frame.grid(row=3, column=1, pady=5)
 
     # Kalender menggunakan tkcalendar
-    calendar = Calendar(frame, selectmode="day", date_pattern="dd/mm/yyyy")
+    calendar = Calendar(frame, selectmode="day", date_pattern="yyyy-mm-dd")
     calendar.grid(row=0, column=0, padx=(10, 0), pady=(20, 20), sticky="w")
+
+    # Set the calendar date to the due date
+    calendar.selection_set(due_date)
 
     # Tombol Back
     Back_button = Button(frame, text="Back",  height=2,width=10, font=('Inter', 14),command=back)

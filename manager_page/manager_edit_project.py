@@ -6,7 +6,7 @@ from datetime import date
 # 1. Fix the Edit Project button to edit the project to the database
 # 2. Fix the calendar to display the current date and allow the user to select a date
 # 3. Turn the file into a function to be called from the main file
-def edit_project(root, db, cursor, project_id, name_label, tree):
+def edit_project(root, db, cursor, project_id, name_label, progress_label, status_label, tree):
     name = name_label.get()
     name_label.delete(0, END)
     cursor.execute(
@@ -16,7 +16,7 @@ def edit_project(root, db, cursor, project_id, name_label, tree):
         WHERE projectid = {project_id}
         """
     )
-    tree.item(tree.selection()[0], values=(project_id, name))
+    tree.item(tree.selection()[0], values=(project_id, name, progress_label, status_label))
     db.commit()
     root.destroy()
 
@@ -46,6 +46,6 @@ def manager_edit_project(root, db, cursor, tree):
     frame.grid(row=3, column=1, pady=5)
 
     # Tombol Add Task
-    Back_button = Button(frame, text="Edit Project", height=2, width=10, font=('Inter', 14), command=lambda: edit_project(popup, db, cursor, items[0], label_task_name_value, tree))
+    Back_button = Button(frame, text="Edit Project", height=2, width=10, font=('Inter', 14), command=lambda: edit_project(popup, db, cursor, items[0], label_task_name_value, items[2], items[3], tree))
     Back_button.grid(row=0, column=1, padx=(int(screen_width*0.46875), 20), pady=(20, 20), sticky="se")
 

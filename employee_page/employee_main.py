@@ -26,6 +26,14 @@ UPDATE task SET status = '{new_values[-1]}' WHERE taskid = '{selected_item[0]}'
 """
     )
     db.commit()
+    if new_values[3] == "Done": 
+        print(selected)
+        tree.tag_configure("done", background="lightgreen") 
+        tree.item(selected[0], tags="done") 
+    elif new_values[3] == "Not Done": 
+        print(selected)
+        tree.tag_configure("not_done", background="lightcoral") 
+        tree.item(selected[0], tags="not_done")
 
 def close_window(root):
     root.destroy()
