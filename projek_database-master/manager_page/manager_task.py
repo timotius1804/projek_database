@@ -10,18 +10,53 @@ from manager_page.manager_edit_task import manager_edit_task
 # 4. Turn the file into a function to be called from the main file 
 #    that accepts project identifier as an argument
 
-def delete_task(db, cursor, tree):
+def delete_task(db, cursor, tree,tree_main,project_id):
     selected = tree.selection()
-    task_id = tree.item(selected[0], "values")[0]
+    slected_value = tree.item(selected[0], "values")
+    task_id = slected_value[0]
     cursor.execute(
         f"""
         DELETE FROM task WHERE taskid = '{task_id}'
         """
     )
     db.commit()
-    tree.delete(tree.selection())
+    tree.delete(selected[0])
+
+    # Update jumlah task di Treeview utama
+    # cursor.execute(
+    #     f"""
+    #     SELECT COUNT(*) FROM task WHERE projectid = '{project_id}'
+    #     """
+    # )
+    # total_tasks = cursor.fetchone()[0]
+
+    # cursor.execute(
+    #     f"""
+    #     SELECT COUNT(*) FROM task WHERE projectid = '{project_id}' AND status = 'Done'
+    #     """
+    # )
+    # done_tasks = cursor.fetchone()[0]
+
+    # Update nilai pada Treeview utama
+    selected_main = tree_main.selection()[0]
+    current_values = tree_main.item(selected_main, "values")
+    done_tasks, total_tasks = map(int, current_values[2].split("/"))
+    if slected_value[3] == 'Done':
+        done_tasks -= 1
+        total_tasks -= 1
+    else:
+        total_tasks -=1
+    
+    status = current_values[3]
+    if done_tasks == total_tasks:
+        status = "Done"
+    tree_main.item(selected_main, values=(current_values[0], current_values[1], f"{done_tasks}/{total_tasks}", status))
+    
+
+
+
 # Membuat window utama
-def taskProject(root, db, cursor, project_id):
+def taskProject(root, db, cursor, project_id, tree_main):
     task_window = Toplevel(root)
     task_window.attributes("-fullscreen", True)
     task_window.configure(bg="white")
@@ -95,15 +130,15 @@ SELECT taskid, taskname, taskdue, status FROM task WHERE projectid = '{project_i
     frame_two.grid(row=1, column=1, padx=0, pady=20, sticky="nsew")
 
     # Mengatur tombol "Add Task"
-    View_details_button = Button(frame_two, text="Add Task", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: manager_add_task(task_window, db, cursor, tree, project_id))
+    View_details_button = Button(frame_two, text="Add Task", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: manager_add_task(task_window, db, cursor, tree, project_id, tree_main))
     View_details_button.grid(row=0, column=0, sticky="e", pady=10, padx=5)
 
     # Mengatur tombol "Edit Task"
-    Mark_button = Button(frame_two, text="Edit Task", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: manager_edit_task(task_window, db, cursor, tree))
+    Mark_button = Button(frame_two, text="Edit Task", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: manager_edit_task(task_window, db, cursor, tree, tree_main))
     Mark_button.grid(row=1, column=0, sticky="e", pady=10, padx=5)
 
     # Mengatur tombol "Delete Task"
-    Delete_button = Button(frame_two, text="Delete Task", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: delete_task(db, cursor, tree))
+    Delete_button = Button(frame_two, text="Delete Task", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: delete_task(db, cursor, tree,tree_main,project_id))
     Delete_button.grid(row=2, column=0, sticky="e", pady=10, padx=5)
 
     # Menambahkan baris kosong sebelum tombol Logout
