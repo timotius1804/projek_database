@@ -6,6 +6,16 @@ from datetime import date
 # 1. Fix the Edit Task button to edit the task to the database
 # 2. Fix the calendar to display the current date and allow the user to select a date
 # 3. Turn the file into a function to be called from the main file
+def ambil_employee_name(cursor,employee_id):
+    cursor.execute(
+        f"""
+        select username from user
+        where userid = "{employee_id}";
+        """
+    )
+    hasil = cursor.fetchall()
+    return hasil[0][0]
+
 def ambil_employee_id(cursor,employee_name):
     cursor.execute(
         f"""
@@ -21,12 +31,12 @@ def ambil_employee_id(cursor,employee_name):
 def edit_task(root, db, cursor, task_id, name_label, description_label, employee_id_label, due_date_label, status, tree,tree_main):#tree main juga di add disini :    name = name_label.get()
     description = description_label.get("1.0", END)
     due_date = due_date_label.get()
-    employee_id = ambil_employee_id(cursor,employee_id_label)
+    employee_id = ambil_employee_id(cursor, employee_id_label.get())
     name = name_label.get()
     name_label.delete(0, END)
     description_label.delete("1.0", END)
     due_date_label.delete(0, END)
-    employee_id_label.delete(0, END)#
+    employee_id_label.delete(0, END)
     cursor.execute(
         f"""
         UPDATE task
@@ -35,7 +45,6 @@ def edit_task(root, db, cursor, task_id, name_label, description_label, employee
         """
     )
     tree.item(tree.selection()[0], values=(task_id, name, due_date, status))
-    tree_main.item(tree_main.selection()[0], values=(task_id,name,due_date,status))
     db.commit()
     root.destroy()
 # Membuat jendela utama
@@ -49,6 +58,7 @@ def manager_edit_task(root, db, cursor, tree, tree_main):
         """
     )
     values = cursor.fetchall()[0]
+    print(values)
     window = Toplevel(root)
     window.title("Task Display Form")
 
@@ -68,7 +78,7 @@ def manager_edit_task(root, db, cursor, tree, tree_main):
 
     label_task_employee = Label(window, text="Employee Name:", font=("Arial", 14), bg="white")
     label_task_employee_value = Entry(window, text="employee", font=("Arial", 14), bg="#ECECEC")
-    label_task_employee_value.insert(0, values[3])
+    label_task_employee_value.insert(0, ambil_employee_name(cursor,values[3]))
     label_task_employee.grid(row=1, column=0, sticky="e", padx=(20, 10), pady=(20, 10))
     label_task_employee_value.grid(row=1, column=1, sticky="w", padx=(10, 20), pady=(20, 10))
 

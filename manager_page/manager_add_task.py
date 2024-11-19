@@ -16,6 +16,7 @@ def ambil_employee_id(cursor,employee_name):
         """
     )
     hasil = cursor.fetchall()
+    print(hasil)
     return hasil[0][0]
 
 
@@ -102,5 +103,5 @@ def manager_add_task(root, db, cursor, tree, project_id,tree_main):
     label_due_date_value.insert(0, calendar.get_date())
 
     # Tombol Add Task
-    Back_button = Button(frame, text="Add Task", height=2, width=10, font=('Inter', 14), command=lambda: add_task(window, db, cursor, label_task_name_value.get(), text_task_description.get("1.0", "end-1c"), label_task_employee_value.get(), project_id, label_due_date_value.get(), tree))
+    Back_button = Button(frame, text="Add Task", height=2, width=10, font=('Inter', 14), command=lambda: add_task(window, db, cursor, label_task_name_value.get(), text_task_description.get("1.0", "end-1c"), label_task_employee_value.get(), project_id, label_due_date_value.get(), tree, tree_main))
     Back_button.grid(row=0, column=1, padx=(int(screen_width*0.46875), 20), pady=(20, 20), sticky="se")
