@@ -6,7 +6,21 @@ from datetime import date
 # 1. Fix the Add Task button to add the task to the database
 # 2. Fix the calendar to display the current date and allow the user to select a date
 # 3. Turn the file into a function to be called from the main file
-def add_task(root, db, cursor, name, description, employee_id, project_id, due_date, tree):
+
+#Mengambil id employee berdasarkan usernamenya
+def ambil_employee_id(cursor,employee_name):
+    cursor.execute(
+        f"""
+        select userid from user
+        where username = "{employee_name}";
+        """
+    )
+    hasil = cursor.fetchall()
+    return hasil[0][0]
+
+
+def add_task(root, db, cursor, name, description, employee_name, project_id, due_date, tree,tree_main):#tree main juga di add kesini:
+    employee_id = ambil_employee_id(cursor,employee_name)
     cursor.execute(
         f"""
         INSERT INTO task (taskname, deskripsi, employeeid, projectid, taskdue)
@@ -19,11 +33,19 @@ def add_task(root, db, cursor, name, description, employee_id, project_id, due_d
         """
     )
     last_id = cursor.fetchall()[0][0]
-    tree.insert("", "end", values=(last_id, name, due_date, 'Not Done'))
+   
+    tree.insert("", "end", values=(last_id, name, due_date, 'Not Done'))    
+
+    selected_main = tree_main.selection()
+    current_values = tree_main.item(selected_main, "values")
+    print(f"cur {current_values}")
+    print(f" select {selected_main}")
+    done_tasks, total_tasks = map(int, current_values[2].split("/"))
+    tree_main.item(selected_main, values=(current_values[0], current_values[1], f"{done_tasks}/{total_tasks+1}", "Not Done"))
     db.commit()
     root.destroy()
 # Membuat jendela utama
-def manager_add_task(root, db, cursor, tree, project_id):
+def manager_add_task(root, db, cursor, tree, project_id,tree_main):
     window = Toplevel(root)
     window.title("Task Display Form")
 
@@ -66,7 +88,7 @@ def manager_add_task(root, db, cursor, tree, project_id):
 
     # Frame untuk kalender dan exit button
     frame = Frame(window, bg="white")
-    frame.grid(row=3, column=1, pady=5)
+    frame.grid(row=4, column=1, pady=5)
 
     # Kalender menggunakan tkcalendar
     calendar = Calendar(frame, selectmode="day", date_pattern="yyyy-mm-dd")

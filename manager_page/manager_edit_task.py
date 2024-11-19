@@ -14,7 +14,7 @@ def edit_task(root, db, cursor, task_id, name_label, description_label, employee
     name_label.delete(0, END)
     description_label.delete("1.0", END)
     due_date_label.delete(0, END)
-    employee_id_label.delete(0, END)
+    employee_id_label.delete(0, END)#
     cursor.execute(
         f"""
         UPDATE task
