@@ -25,7 +25,7 @@ def close_window(root):
     root.destroy()
 
 def admin(db, root: Tk, cursor, name, user_id):
-    root.configure(bg="white")
+    root.configure(bg="#faebd7")
     root.attributes("-fullscreen", True)
     root.title("Employee Task Table")
 
@@ -39,14 +39,14 @@ def admin(db, root: Tk, cursor, name, user_id):
     welcome_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
     # Mengatur frame agar menempati sekitar 70% dari window
-    frame = Frame(root, borderwidth=1, relief="solid", bg="white")  # Border untuk visualisasi
+    frame = Frame(root, borderwidth=1, relief="solid", bg="#faebd7")  # Border untuk visualisasi
     frame.grid(row=1, column=0, padx=30, pady=20, sticky="nsew")  # Mengatur padding
 
     # Membuat style khusus untuk Treeview
     style = ttk.Style()
     style.configure("Custom.Treeview", 
-                    background="#ECECEC",         # Warna background sel data
-                    fieldbackground="#ECECEC",    # Warna background kolom data
+                    background="white",         # Warna background sel data
+                    fieldbackground="white",    # Warna background kolom data
                     foreground="black",           # Warna teks
                     rowheight=25)                 # Tinggi setiap baris
 
@@ -76,7 +76,7 @@ def admin(db, root: Tk, cursor, name, user_id):
     scrollbar = ttk.Scrollbar(frame, orient="vertical", command=tree.yview)
     scrollbar.grid(row=0, column=1, sticky="ns")  # Menggunakan grid untuk scrollbar
     scrollbar_style = ttk.Style()
-    scrollbar_style.configure("Vertical.TScrollbar", background="#ECECEC", troughcolor="#ECECEC")  # Warna scrollbar
+    scrollbar_style.configure("Vertical.TScrollbar", background="white", troughcolor="white")  # Warna scrollbar
     tree.configure(yscrollcommand=scrollbar.set)
 
     # Menambahkan beberapa data contoh ke dalam tabel
@@ -90,27 +90,27 @@ def admin(db, root: Tk, cursor, name, user_id):
         tree.insert("", "end", values=["", "No Users", "",])
 
     # Menambahkan frame dan tombol di sebelah kanan
-    frame_two = Frame(root, borderwidth=0, relief="solid", bg="white")  # Border untuk visualisasi
+    frame_two = Frame(root, borderwidth=0, relief="solid", bg="#faebd7")  # Border untuk visualisasi
     frame_two.grid(row=1, column=1, padx=0, pady=20, sticky="nsew")
 
     # Mengatur tombol "Add Task"
-    View_details_button = Button(frame_two, text="Add User", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: admin_add_user.open_popup(root, db, cursor, tree))
+    View_details_button = Button(frame_two,bg="white" , text="Add User", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: admin_add_user.open_popup(root, db, cursor, tree))
     View_details_button.grid(row=0, column=0, sticky="e", pady=10, padx=5)
     #
 
     # Mengatur tombol "Edit Task"
-    Mark_button = Button(frame_two, text="Edit User", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: admin_edit_user.open_popup(root, db, cursor, tree))
+    Mark_button = Button(frame_two,bg="white", text="Edit User", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: admin_edit_user.open_popup(root, db, cursor, tree))
     Mark_button.grid(row=1, column=0, sticky="e", pady=10, padx=5)
 
     # Mengatur tombol "Delete Task"
-    Mark_button = Button(frame_two, text="Delete User", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: delete(db, cursor, tree_select(tree), tree))
+    Mark_button = Button(frame_two,bg="white", text="Delete User", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: delete(db, cursor, tree_select(tree), tree))
     Mark_button.grid(row=2, column=0, sticky="e", pady=10, padx=5)
 
     # Menambahkan baris kosong sebelum tombol Logout
     frame_two.grid_rowconfigure(3, weight=1)  # Membiarkan baris 2 mengambil sisa ruang
 
     # Mengatur tombol "Logout" di pojok kanan bawah
-    Logout_button = Button(frame_two, text="Logout", width=int(screen_width - screen_width * 0.99453125), height=1, font=('Inter'), command=lambda: close_window(root)) 
+    Logout_button = Button(frame_two,bg="white", text="Logout", width=int(screen_width - screen_width * 0.99453125), height=1, font=('Inter'), command=lambda: close_window(root)) 
     Logout_button.grid(row=4, column=0, sticky="se", pady=10, padx=5)  # Pindahkan ke baris 3
 
     # Mengatur agar frame dua dan treeview bisa menyesuaikan ukuran

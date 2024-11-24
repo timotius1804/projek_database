@@ -27,4 +27,8 @@ if __name__ == "__main__":
     root = Tk()
     login.login(mydb, root, mycursor)
 
+    root.attributes("-fullscreen", True)
+    root.bind("<Escape>", lambda event: root.attributes("-fullscreen", False))
+
+
     root.mainloop()
