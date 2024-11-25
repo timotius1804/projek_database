@@ -35,8 +35,8 @@ def manager_edit_project(root, db, cursor, tree):
     screen_width = window.winfo_screenwidth()
 
     # Label untuk Task Name (hanya teks)
-    label_task_name = Label(window, text="Task Name :", font=("Arial", 14), bg="#faebd7")
-    label_task_name_value = Entry(window, text="Example Task Name", font=("Arial", 14), bg="white")
+    label_task_name = Label(window, text="Project Name :", font=("Arial", 14), bg="#faebd7")
+    label_task_name_value = Entry(window, text="Example Project Name", font=("Arial", 14), bg="white")
     label_task_name.grid(row=0, column=0, sticky="e", padx=(20, 10), pady=(20, 10))
     label_task_name_value.insert(0, items[1])
     label_task_name_value.grid(row=0, column=1, sticky="w", padx=(10, 20), pady=(20, 10))

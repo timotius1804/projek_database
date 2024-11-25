@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import ttk
 
 # To-Do :
 # 1. Add functionality to the Edit User button and connect it to the database
@@ -15,8 +16,33 @@ def edit_user(db, cursor, name, password, user_type, tree):
     tree.item(selected[0], values=(items[0], name, password, user_type))
     if items[3] != user_type:
         if items[3] == 'Employee':
+            cursor.execute(f"SELECT employeeid FROM employee WHERE userid = (SELECT userid FROM user WHERE username = '{name}')")
+            employee_id = cursor.fetchall()
+            cursor.execute(f"SELECT taskid FROM task WHERE employeeid = {employee_id[0][0]}")
+            data = cursor.fetchall()
+            for i in data:
+                cursor.execute(
+                    f"""
+                    DELETE FROM task WHERE taskid = {i[0]}
+                    """
+                )
             cursor.execute(f"DELETE FROM employee WHERE userid = (SELECT userid FROM user WHERE username = '{name}')")
         elif items[3] == 'Manager':
+            cursor.execute(f"SELECT managerid FROM manager WHERE userid = (SELECT userid FROM user WHERE username = '{name}')")
+            manager_id = cursor.fetchall()
+            cursor.execute(f"SELECT projectid FROM project WHERE managerid = {manager_id[0][0]}")
+            data = cursor.fetchall()
+            for i in data:
+                cursor.execute(
+                    f"""
+                    DELETE FROM task WHERE projectid = {i[0]}
+                    """
+                )
+                cursor.execute(
+                    f"""
+                    DELETE FROM project WHERE projectid = {i[0]}
+                    """
+                )
             cursor.execute(f"DELETE FROM manager WHERE userid = (SELECT userid FROM user WHERE username = '{name}')")
         elif items[3] == 'Admin':
             cursor.execute(f"DELETE FROM admin WHERE userid = (SELECT userid FROM user WHERE username = '{name}')")
@@ -72,10 +98,10 @@ def open_popup(root, db, cursor, tree):
     # Label dan Entry untuk user_type
     user_type_label = Label(frame, text=f"User Type  {'':<3}:")
     user_type_label.grid(row=2, column=0, sticky="w", padx=5, pady=5)
-    user_type_var = StringVar(popup)
+    user_type_var = StringVar()
     user_type_var.set(items[3])
     user_types = ["Employee", "Manager", "Admin"]
-    user_type_entry = OptionMenu(frame, user_type_var, *user_types)
+    user_type_entry = ttk.Combobox(frame, textvariable=user_type_var, values=user_types)
     user_type_entry.grid(row=2, column=1, padx=5, pady=5)
 
     # Tombol Edit_user

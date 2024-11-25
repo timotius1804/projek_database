@@ -56,6 +56,11 @@ def add_task(root, db, cursor, name_label, description_label, employee_name_labe
     last_id = cursor.fetchall()[0][0]
    
     tree.insert("", "end", values=(last_id, name, due_date, 'Not Done'))    
+    cursor.execute(
+        f"""
+        UPDATE project SET status = 'Not Done' WHERE projectid = {project_id}
+        """
+    )
 
     selected_main = tree_main.selection()
     current_values = tree_main.item(selected_main, "values")

@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import ttk
 
 # To-Do :
 # 1. Add functionality to the Add User button and connect it to the database
@@ -78,10 +79,10 @@ def open_popup(root, db, cursor, tree):
     # Label dan Entry untuk user_type
     user_type_label = Label(frame, text=f"User Type  {'':<3}:")
     user_type_label.grid(row=2, column=0, sticky="w", padx=5, pady=5)
-    user_type_var = StringVar(popup)
+    user_type_var = StringVar()
     user_type_var.set("Employee")
     user_types = ["Employee", "Manager", "Admin"]
-    user_type_entry = OptionMenu(frame, user_type_var, *user_types)
+    user_type_entry = ttk.Combobox(frame, textvariable=user_type_var, values=user_types)
     user_type_entry.grid(row=2, column=1, padx=5, pady=5)
 
     # Tombol Add_user

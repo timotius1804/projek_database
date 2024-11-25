@@ -74,12 +74,12 @@ def login(db, root: Tk, cursor):
     logo_label = Label(login_frame, image=logo_photo, bg="#f7e3c6")
     logo_label.grid(row=0, column=0, columnspan=2, pady=10)
 
-    label_username = Label(login_frame, text="Username", font=("Arial", 14), bg="#f7e3c6")
+    label_username = Label(login_frame, text="Username : ", font=("Arial", 14), bg="#f7e3c6")
     label_username.grid(row=1, column=0, pady=5)
     name_entry = Entry(login_frame, font=("Arial", 14))
     name_entry.grid(row=1, column=1, pady=5)
 
-    label_password = Label(login_frame, text="Password", font=("Arial", 14), bg="#f7e3c6")
+    label_password = Label(login_frame, text="Password : ", font=("Arial", 14), bg="#f7e3c6")
     label_password.grid(row=2, column=0, pady=5)
     password_entry = Entry(login_frame, font=("Arial", 14), show="*")
     password_entry.grid(row=2, column=1, pady=5)

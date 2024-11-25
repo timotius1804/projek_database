@@ -40,7 +40,7 @@ def db_init(cursor, db):
         projectid INT AUTO_INCREMENT PRIMARY KEY,
         projectname VARCHAR(50) NOT NULL,
         managerid INT NOT NULL,
-        projectstatus ENUM('Not Done', 'Done') NOT NULL DEFAULT 'Not Done',
+        projectstatus ENUM('Not Done', 'Done') NOT NULL DEFAULT 'Done',
         FOREIGN KEY (managerid) REFERENCES manager(managerid)
     )
     """)

@@ -47,7 +47,7 @@ def manager(db, root: Tk, cursor, name, user_id):
 
     # Label Selamat Datang
     status = "Manager"
-    welcome_label = Label(root, text=f"Welcome, {name} ({status})",bg="#faebd7",font=("Arial", 16, "bold"))
+    welcome_label = Label(root, text=f"Welcome, {name} ({status})",bg="#faebd7",font=("Inter", 16, "bold"))
     welcome_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
     # Mengatur frame agar menempati sekitar 70% dari window
@@ -116,13 +116,24 @@ def manager(db, root: Tk, cursor, name, user_id):
     """
         )
     data = cursor.fetchall()
-    if data:
-        data = [(data[i][0], data[i][1], f"{done_tasks[i][1]}/{total_tasks[i][1]}", "Not Done" if (done_tasks[i][1] != total_tasks[i][1]) else "Done") for i in range(len(data))]
+    data = [(data[i][0], data[i][1], f"{done_tasks[i][1]}/{total_tasks[i][1]}", "Not Done" if (done_tasks[i][1] != total_tasks[i][1]) else "Done") for i in range(len(data))]
 
-        for row in data:
-            tree.insert("", "end", values=row)
-    else:
-        tree.insert("", "end", values=["", "No Projects", "",])
+    for row in data:
+        if row[2] == "Not Done":
+            cursor.execute(
+                f"""
+                UPDATE project SET projectstatus = 'Not Done' WHERE projectid = {row[0]}
+                """
+            )
+        else:
+            cursor.execute(
+                f"""
+                UPDATE project SET projectstatus = 'Done' WHERE projectid = {row[0]}
+                """
+            )
+        
+        tree.insert("", "end", values=row)
+        db.commit()
     # Menambahkan frame dan tombol di sebelah kanan
     frame_two = Frame(root, borderwidth=0, relief="solid", bg="#faebd7")  # Border untuk visualisasi
     frame_two.grid(row=1, column=1, padx=0, pady=20, sticky="nsew")

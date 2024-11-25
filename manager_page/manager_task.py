@@ -112,11 +112,9 @@ SELECT taskid, taskname, taskdue, status FROM task WHERE projectid = '{project_i
 """
     )
     data = cursor.fetchall()
-    if data:
-        for row in data:
-            tree.insert("", "end", values=row)
-    else:
-        tree.insert("", "end", values=["", "No Task", "",])
+    
+    for row in data:
+        tree.insert("", "end", values=row)
 
     # Menambahkan frame dan tombol di sebelah kanan
     frame_two = Frame(task_window, borderwidth=0, relief="solid", bg="#faebd7")  # Border untuk visualisasi
