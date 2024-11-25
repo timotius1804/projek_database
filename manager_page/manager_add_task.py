@@ -19,11 +19,29 @@ def ambil_employee_id(cursor,employee_name):
         """
     )
     hasil = cursor.fetchall()
+
+    cursor.execute(
+        f"""
+        select employeeid from employee
+        where userid = "{hasil[0][0]}";
+        """
+    )
+
+    hasil = cursor.fetchall()
     return hasil[0][0]
 
 
-def add_task(root, db, cursor, name, description, employee_name, project_id, due_date, tree,tree_main):#tree main juga di add kesini:
+def add_task(root, db, cursor, name_label, description_label, employee_name_label, project_id, due_date_label, tree,tree_main):#tree main juga di add kesini:
+    employee_name = employee_name_label.get()
+    description = description_label.get("1.0", END)
+    due_date = due_date_label.get()
     employee_id = ambil_employee_id(cursor,employee_name)
+    name = name_label.get()
+    name_label.delete(0, END)
+    description_label.delete("1.0", END)
+    due_date_label.delete(0, END)
+    employee_name_label.delete(0, END)
+    print(employee_id)
     cursor.execute(
         f"""
         INSERT INTO task (taskname, deskripsi, employeeid, projectid, taskdue)
@@ -64,11 +82,15 @@ def manager_add_task(root, db, cursor, tree, project_id,tree_main):
     label_task_name_value.grid(row=0, column=1, sticky="w", padx=(10, 20), pady=(20, 10))
 
     # Label untuk Employee Name
-    options = []
 
     choice_var = StringVar() # Variabel untuk menyimpan pilihan
-
-    options = [] # Daftar pilihan
+    cursor.execute(
+        """
+        SELECT username FROM user WHERE usertype = 'Employee'
+        """
+    )
+    employees = cursor.fetchall()
+    options = employees # Daftar pilihan
 
     label_task_employee = Label(window, text="Employee Name :", font=("Arial", 14), bg="#faebd7")
     label_task_employee_value = ttk.Combobox(window, textvariable=choice_var, values=options)
@@ -110,5 +132,5 @@ def manager_add_task(root, db, cursor, tree, project_id,tree_main):
     label_due_date_value.insert(0, calendar.get_date())
 
     # Tombol Add Task
-    Back_button = Button(frame,bg="white", text="Add Task", height=2, width=10, font=('Inter', 14), command=lambda: add_task(window, db, cursor, label_task_name_value.get(), text_task_description.get("1.0", "end-1c"), label_task_employee_value.get(), project_id, label_due_date_value.get(), tree,tree_main))
+    Back_button = Button(frame,bg="white", text="Add Task", height=2, width=10, font=('Inter', 14), command=lambda: add_task(window, db, cursor, label_task_name_value, text_task_description, label_task_employee_value, project_id, label_due_date_value, tree,tree_main))
     Back_button.grid(row=0, column=1, padx=(int(screen_width*0.46875), 20), pady=(20, 20), sticky="se")

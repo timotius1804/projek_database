@@ -25,6 +25,15 @@ def ambil_employee_id(cursor,employee_name):
         """
     )
     hasil = cursor.fetchall()
+    cursor.execute(
+        f"""
+        select employeeid from employee
+        where userid = "{hasil[0][0]}";
+        """
+    )
+
+    hasil = cursor.fetchall()
+    print(hasil)
     return hasil[0][0]
 
 
@@ -33,7 +42,7 @@ def edit_task(root, db, cursor, task_id, name_label, description_label, employee
     name = name_label.get()
     description = description_label.get("1.0", END)
     due_date = due_date_label.get()
-    employee_id = ambil_employee_id(cursor,employee_id_label)
+    employee_id = ambil_employee_id(cursor,employee_id_label.get())
     name_label.delete(0, END)
     description_label.delete("1.0", END)
     due_date_label.delete(0, END)
@@ -80,15 +89,19 @@ def manager_edit_task(root, db, cursor, tree, tree_main):
     # Label untuk Employee
 
     # Label untuk Employee Name
-    options = []
 
     choice_var = StringVar() # Variabel untuk menyimpan pilihan
 
-    options = [] # Daftar pilihan
-    
+    cursor.execute(
+        """
+        SELECT username FROM user WHERE usertype = 'Employee'
+        """
+    )
+    employees = cursor.fetchall()
+    options = employees # Daftar pilihan    
     label_task_employee = Label(window, text="Employee Name :", font=("Arial", 14), bg="#faebd7")
     label_task_employee_value = ttk.Combobox(window, textvariable=choice_var, values=options)
-    
+    label_task_employee_value.insert(0, ambil_employee_name(cursor,values[3]))
     label_task_employee.grid(row=1, column=0, sticky="e", padx=(20, 10), pady=(20, 10))
     label_task_employee_value.grid(row=1, column=1, sticky="w", padx=(10, 20), pady=(20, 10))
 

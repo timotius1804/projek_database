@@ -6,7 +6,9 @@ from datetime import date
 # 1. Fix the Add Project button to add the project to the database
 # 2. Fix the calendar to display the currene and allow the user to select a date
 # 3. Turn the file into a function to be called from the main file
-def add_project(root, db, cursor, name, manager_id, tree):
+def add_project(root, db, cursor, name_label, manager_id, tree):
+    name = name_label.get()
+    name_label.delete(0, END)
     cursor.execute(
         f"""
         INSERT INTO project (projectname, managerid)
@@ -65,6 +67,6 @@ def manager_add_project(root, db, cursor, tree, manager_id):
     calendar.grid(row=0, column=0, padx=(10, 20), pady=(20, 20), sticky="w")  # Gunakan sticky="w" untuk rata kiri
 
     # Tombol Add Task
-    Back_button = Button(frame,bg='white', text="Edit Project", height=2, width=10, font=('Inter', 14), command=lambda: add_project(window, db, cursor, label_task_name_value.get(), manager_id, tree))
+    Back_button = Button(frame,bg='white', text="Edit Project", height=2, width=10, font=('Inter', 14), command=lambda: add_project(window, db, cursor, label_task_name_value, manager_id, tree))
     Back_button.grid(row=0, column=1, padx=(int(screen_width*0.46875), 20), pady=(20, 20), sticky="se")
 

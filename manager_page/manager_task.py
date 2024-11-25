@@ -10,7 +10,7 @@ from manager_page.manager_edit_task import manager_edit_task
 # 4. Turn the file into a function to be called from the main file 
 #    that accepts project identifier as an argument
 
-def delete_task(db, cursor, tree,tree_main,project_id):
+def delete_task(db, cursor, tree,tree_main, project_id):
     selected = tree.selection()
     slected_value = tree.item(selected[0], "values")
     task_id = slected_value[0]
@@ -19,7 +19,6 @@ def delete_task(db, cursor, tree,tree_main,project_id):
         DELETE FROM task WHERE taskid = '{task_id}'
         """
     )
-    db.commit()
     tree.delete(selected[0])
 
     # Update nilai pada Treeview utama
@@ -35,7 +34,19 @@ def delete_task(db, cursor, tree,tree_main,project_id):
     status = current_values[3]
     if done_tasks == total_tasks:
         status = "Done"
+        cursor.execute(
+        f"""
+        UPDATE project SET status = 'Done' WHERE projectid = {project_id}
+        """
+    )
+    else:
+        cursor.execute(
+        f"""
+        UPDATE project SET status = 'Not Done' WHERE projectid = {project_id}
+        """
+    )
     tree_main.item(selected_main, values=(current_values[0], current_values[1], f"{done_tasks}/{total_tasks}", status))
+    db.commit()
 
 # Membuat window utama
 def taskProject(root, db, cursor, project_id, tree_main):
@@ -120,7 +131,7 @@ SELECT taskid, taskname, taskdue, status FROM task WHERE projectid = '{project_i
     Mark_button.grid(row=1, column=0, sticky="e", pady=10, padx=5)
 
     # Mengatur tombol "Delete Task"
-    Delete_button = Button(frame_two, bg= "white", text="Delete Task", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: delete_task(db, cursor, tree))
+    Delete_button = Button(frame_two, bg= "white", text="Delete Task", width=int(screen_width - screen_width * 0.96484375),  height=2, font=('Inter', 14), command=lambda: delete_task(db, cursor, tree, tree_main, project_id))
     Delete_button.grid(row=2, column=0, sticky="e", pady=10, padx=5)
 
     # Menambahkan baris kosong sebelum tombol Logout
